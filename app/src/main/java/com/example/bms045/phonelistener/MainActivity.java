@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.example.bms045.phonelistener.services.SocketListener;
 import com.example.bms045.phonelistener.utils.NetworkHelper;
@@ -30,13 +31,13 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String message = intent.getStringExtra(SocketListener.MY_SERVICE_PAYLOAD);
+            String clientIP = intent.getStringExtra(SocketListener.CLIENT_IP);
+            Toast.makeText(context, clientIP, Toast.LENGTH_SHORT).show();
             Toast.makeText(context, message, Toast.LENGTH_LONG).show();
         }
     };
 
-    Button startButton;
-    Button stopButton;
-
+      ToggleButton toggleButton;
 
     TextView output;
 
@@ -46,14 +47,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         output = (TextView) findViewById(R.id.output);
-        startButton = (Button) findViewById(R.id.start_button);
-        stopButton = (Button) findViewById(R.id.stop_button);
+
+        toggleButton = (ToggleButton) findViewById(R.id.toggleButton);
 
         LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(mBroadcastReceiver, new IntentFilter(SocketListener.MY_SERVICE_MESSAGE));
 
-        startButton.setBackgroundColor(Color.GREEN);
-        stopButton.setBackgroundColor(Color.LTGRAY);
 
+        toggleButton.setBackgroundColor(Color.RED);
 
     }
 
@@ -90,46 +90,49 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void startClickHandler(View view) {
 
-        networkOK = NetworkHelper.hasNetworkAccess(this);
-        if (networkOK != true) {
-            Toast.makeText(this, "Network Unavailable", Toast.LENGTH_LONG).show();
-        } else if (intent == null) {
-
-            output.append(NetworkHelper.getNetworkIpAddress(this) + ":" + SocketListener.SERVERPORT + "\n");
-
-            Toast.makeText(this, "Start", Toast.LENGTH_SHORT).show();
-            startButton.setBackgroundColor(Color.LTGRAY);
-            stopButton.setBackgroundColor(Color.RED);
-
-            intent = new Intent(this, SocketListener.class);
-            intent.setData(Uri.parse(SocketListener.START_LISTENING));
-            startService(intent);
-        }
-
-    }
 
     @Override
     public void onBackPressed() {
         //super.onBackPressed();
-        if(intent == null){
+        if (intent == null) {
             finish();
-        }  else {
+        } else {
             Toast.makeText(this, "Unable to exit while connected", Toast.LENGTH_SHORT).show();
         }
 
     }
 
-    public void stopClickHandler(View view) {
-        if (intent != null) {
-            Toast.makeText(this, "Stop", Toast.LENGTH_SHORT).show();
-            startButton.setBackgroundColor(Color.GREEN);
-            stopButton.setBackgroundColor(Color.LTGRAY);
-            intent.setData(Uri.parse(SocketListener.STOP_LISTENING));
-            stopService(intent);
-            intent = null;
-            output.setText("");
+
+    public void toggleHandler(View view) {
+
+
+
+        if (((ToggleButton) view).isChecked()) {
+            networkOK = NetworkHelper.hasNetworkAccess(MainActivity.this);
+            if (networkOK != true) {
+                Toast.makeText(MainActivity.this, "Network Unavailable", Toast.LENGTH_SHORT).show();
+            } else if (intent == null) {
+
+                output.append(NetworkHelper.getNetworkIpAddress(MainActivity.this) + ":" + SocketListener.SERVERPORT + "\n");
+
+                Toast.makeText(MainActivity.this, "Start", Toast.LENGTH_SHORT).show();
+
+                toggleButton.setBackgroundColor(Color.GREEN);
+
+                intent = new Intent(MainActivity.this, SocketListener.class);
+                intent.setData(Uri.parse(SocketListener.START_LISTENING));
+                startService(intent);
+            }
+        } else {
+            if (intent != null) {
+                Toast.makeText(MainActivity.this, "Stop", Toast.LENGTH_SHORT).show();
+                toggleButton.setBackgroundColor(Color.RED);
+                intent.setData(Uri.parse(SocketListener.STOP_LISTENING));
+                stopService(intent);
+                intent = null;
+                output.setText("");
+            }
         }
     }
 

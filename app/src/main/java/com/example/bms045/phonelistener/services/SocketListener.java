@@ -23,8 +23,9 @@ public class SocketListener extends IntentService {
     public static final String TAG = "SocketListener";
     public static final int SERVERPORT = 6000;
 
-    public static final String MY_SERVICE_MESSAGE="myServiceMessage";
-    public static final String MY_SERVICE_PAYLOAD="myServicePayload";
+    public static final String MY_SERVICE_MESSAGE = "myServiceMessage";
+    public static final String MY_SERVICE_PAYLOAD = "myServicePayload";
+    public static final String CLIENT_IP = "client_ip";
 
     private static ServerSocket serverSocket;
 
@@ -130,7 +131,10 @@ public class SocketListener extends IntentService {
                 try {
                     read = input.readLine();
                     if (read != null) {
+                        String clientIP = clientSocket.getInetAddress().getHostName().toString();
+                        clientIP += ":" + String.valueOf((clientSocket.getPort()));
                         messageIntent.putExtra(MY_SERVICE_PAYLOAD, read);
+                        messageIntent.putExtra(CLIENT_IP, clientIP);
                         LocalBroadcastManager manager = LocalBroadcastManager.getInstance(getApplicationContext());
                         manager.sendBroadcast(messageIntent);
                         Log.i(TAG, "updateUIThread: " + read);

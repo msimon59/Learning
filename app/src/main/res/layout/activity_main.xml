@@ -4,38 +4,18 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/pooh"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@drawable/pooh"
     tools:context="com.example.bms045.phonelistener.MainActivity">
-
-    <Button
-        android:id="@+id/start_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:onClick="startClickHandler"
-        android:text="@string/start_running" />
-
-    <Button
-        android:id="@+id/stop_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:onClick="stopClickHandler"
-        android:text="@string/stop_running" />
 
 
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/start_button">
+        android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/output"
@@ -44,5 +24,18 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
     </ScrollView>
+
+    <ToggleButton
+        android:id="@+id/toggleButton"
+        android:layout_width="125dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="17dp"
+        android:layout_marginStart="17dp"
+        android:onClick="toggleHandler"
+        android:textOn="Connected"
+        android:textOff="Disconnected"
+        android:text="ToggleButton" />
 
 </RelativeLayout>
